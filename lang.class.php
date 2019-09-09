@@ -1,5 +1,5 @@
 <?php
-require_once("MysqliDb.php");
+
 class Lang
 {
  private $Lang;
@@ -7,10 +7,10 @@ class Lang
  private $Val;
  private $db;
  private $CurrentLanguage;
- public $databaseName = 'db'; // Your database name
- public $username = 'name'; // Your database username
- public $password = 'pass'; // // Your database password
- public $host = 'localhost'; // Your database host, 'localhost' is default.
+public $databaseName = 'awst_reg'; // Your database name
+public $username = 'awst_reg'; // Your database username
+public $password = 'SHJ!scem'; // // Your database password
+public $host = 'localhost'; // Your database host, 'localhost' is default.
 
 
  function __construct($CurrentLanguage)
@@ -90,16 +90,31 @@ class Lang
     );
     
     return $id = $this->db->insert ('lang_values', $data);
+ }  
+ public function CreateStringArr($arr,$Lang=null)
+ {
+     foreach($arr as $key=>$Val)
+     {
+    	 $data = Array (
+    	            "LangID" => $this->GetLangID((isset($Lang))?$Lang:$this->CurrentLanguage),
+                   "Str_Key" => $key,
+                   "Str_Val" => $Val
+        );
+        
+        $id = $this->db->insert ('lang_values', $data);
+     } 
+     return $id;
  }
   public function GetString($key,$Lang=null)
  {
-     $this->db->where ('Lang', $this->GetLangID((isset($Lang))?$Lang:$this->CurrentLanguage));
+     $this->db->where ('LangID', $this->GetLangID((isset($Lang))?$Lang:$this->CurrentLanguage));
      $this->db->where ('Str_Key',$key );
-	 return $this->db->getOne('lang_values')['Str_Val'];
+     $res = $this->db->getOne('lang_values')['Str_Val'];
+	 return (isset($res)?$res:$key);
  }
   public function UpdateString($key,$val,$Lang=null)
  {
-	 $this->db->where ('Lang', $this->GetLangID((isset($Lang))?$Lang:$this->CurrentLanguage));
+	 $this->db->where ('LangID', $this->GetLangID((isset($Lang))?$Lang:$this->CurrentLanguage));
 	 $this->db->where ('Str_Key',$key );
 	 $data = Array (
 	            "Str_Val" => $val
